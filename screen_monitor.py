@@ -57,18 +57,30 @@ class ScreenMonitor:
         inner_frame = tk.Frame(frame, bg='white', bd=0)
         inner_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # 
-
+        # 안내 텍스트
+        label = tk.Label(
+            inner_frame,
+            text="모니터링 영역\n\n's' 키 : 스크린샷 저장\n'q' 키 : 종료",
+            bg='white',
+            fg='blue',
+            font=('Arial', 14, 'bold'),
+            justify=tk.CENTER
+        )
+        label.pack(expand=True)
+        
         
         # 드래그 이벤트 바인딩
         frame.bind('<Button-1>', self.start_drag)
         frame.bind('<B1-Motion>', self.do_drag)
         inner_frame.bind('<Button-1>', self.start_drag)
         inner_frame.bind('<B1-Motion>', self.do_drag)
+        label.bind('<Button-1>', self.start_drag)
+        label.bind('<B1-Motion>', self.do_drag)
+        
+        # 키보드 이벤트 바인딩 (여러 방식으로 바인딩)
+        self.root.bind('<KeyPress>', self.handle_key_press)
 
-        # 키보드 이벤트 바인딩
-        self.root.bind('<KeyPress-s>', lambda e: self.save_screenshot())
-        self.root.bind('<KeyPress-q>', lambda e: self.root.quit())
+        # 포커스 설정
         self.root.focus_set()
         
         print("모니터링 영역이 표시되었습니다.")
@@ -81,6 +93,21 @@ class ScreenMonitor:
 
     def show_window(self):
         self.root.deiconify()
+
+    def handle_key_press(self, event):
+        """키 입력 처리 (한글 포함)"""
+        key = event.keysym
+        char = event.char
+
+        print(f"키 입력 : keysym={key}, char={char}")   # 디버깅용
+
+        # 영문 's' 또는 한글 'ㄴ' (한글 자음)
+        if key == 's' or char == 'ㄴ':
+            self.save_screenshot()
+        elif key == 'q' or char == 'ㅂ':
+            self.root.quit()
+        elif key == 'Escape':
+            self.root.quit()
     
     def save_screenshot(self):
         """현재 모니터링 영역의 스크린샷을 저장"""
@@ -95,7 +122,7 @@ class ScreenMonitor:
                 img = Image.frombytes("RGB", screenshot.size, screenshot.rgb)
                 
                 # 파일명에 타임스탬프 추가
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 filename = f"IMG_{timestamp}.png"
                 filepath = os.path.join(self.save_dir, filename)
                 
