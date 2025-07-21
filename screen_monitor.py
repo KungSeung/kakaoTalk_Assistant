@@ -7,7 +7,7 @@ import time
 
 class ScreenMonitor:
     def __init__(self):
-        self.monitor_area = {"top": 100, "left": 100, "width": 800, "height": 600}
+        self.monitor_area = {"top": 100, "left": 100, "width": 400, "height": 600}
         self.save_dir = "captured_images"
         self.root = None
         self.drag_data = {"x": 0, "y": 0}
