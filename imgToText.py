@@ -14,7 +14,7 @@ class imgToText:
         img = Image.open(file_path)
         result_easyocr = reader.readtext(np.array(img))
         
-        for text in result_easyocr:     # 디버깅용
+        for idx, (bbox, text, prob) in enumerate(result_easyocr):     # 디버깅용
             print(text)
         return result_easyocr
 
