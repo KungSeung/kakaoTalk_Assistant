@@ -3,6 +3,7 @@ import mss
 from PIL import Image
 import os
 from datetime import datetime
+import time
 
 class ScreenMonitor:
     def __init__(self):
@@ -42,7 +43,7 @@ class ScreenMonitor:
         self.root = tk.Tk()
         self.root.title("Screen Monitor")
         self.root.attributes('-topmost', True)
-        self.root.attributes('-alpha', 0.3)
+        self.root.attributes('-alpha', 0.4)
         
         # 모니터링 영역 위치와 크기 설정
         geometry = f"{self.monitor_area['width']}x{self.monitor_area['height']}+{self.monitor_area['left']}+{self.monitor_area['top']}"
@@ -55,26 +56,16 @@ class ScreenMonitor:
         # 내부 투명 프레임
         inner_frame = tk.Frame(frame, bg='white', bd=0)
         inner_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
-        # 안내 텍스트
-        label = tk.Label(
-            inner_frame,
-            text="모니터링 영역\n\n's' 키 : 스크린샷 저장\n'q' 키 : 종료",
-            bg='white',
-            fg='blue',
-            font=('Arial', 14, 'bold'),
-            justify=tk.CENTER
-        )
-        label.pack(expand=True)
+
+        # 
+
         
         # 드래그 이벤트 바인딩
         frame.bind('<Button-1>', self.start_drag)
         frame.bind('<B1-Motion>', self.do_drag)
         inner_frame.bind('<Button-1>', self.start_drag)
         inner_frame.bind('<B1-Motion>', self.do_drag)
-        label.bind('<Button-1>', self.start_drag)
-        label.bind('<B1-Motion>', self.do_drag)
-        
+
         # 키보드 이벤트 바인딩
         self.root.bind('<KeyPress-s>', lambda e: self.save_screenshot())
         self.root.bind('<KeyPress-q>', lambda e: self.root.quit())
@@ -85,18 +76,27 @@ class ScreenMonitor:
         
         return self.root
     
+    def hide_window(self):
+        self.root.withdraw()
+
+    def show_window(self):
+        self.root.deiconify()
+    
     def save_screenshot(self):
         """현재 모니터링 영역의 스크린샷을 저장"""
         try:
             current_area = self.get_current_position()
             
             with mss.mss() as sct:
+                self.hide_window()
                 screenshot = sct.grab(current_area)
+                time.sleep(0.1)
+                self.show_window()
                 img = Image.frombytes("RGB", screenshot.size, screenshot.rgb)
                 
                 # 파일명에 타임스탬프 추가
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"Text_IMG_{timestamp}.png"
+                filename = f"IMG_{timestamp}.png"
                 filepath = os.path.join(self.save_dir, filename)
                 
                 # 이미지 저장
