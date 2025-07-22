@@ -19,12 +19,14 @@ class imgToText:
         return result_easyocr
 
     def get_latest_file(self):
+        """최신 파일 가져오기"""
         files = glob.glob("captured_images/IMG_*.png")
         if files:
             return max(files)
         return None
 
     def start(self):
+        """텍스트 가져오기 시작"""
         file = self.get_latest_file()
         if file:
             print(f"읽는 파일 : {file}")
@@ -36,7 +38,4 @@ class imgToText:
 if __name__ == "__main__":
     scan = imgToText()
     scan.start()
-
-
-
 
