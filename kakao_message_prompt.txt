@@ -1,7 +1,0 @@
-
-        Supabase MCP 도구를 사용해서
-        1. chat_messages에서 analyzed=false 조회
-        2. 그 중에 제일 최신 파일 하나만 선택
-        3. 각 메시지 감정/키워드/내용 분석
-        4. 결과 저장 및 analyzed=true 업데이트
-    
