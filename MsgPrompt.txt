@@ -1,5 +1,37 @@
-Supabase MCP 도구를 사용해서
-1. chat_messages에서 analyzed=false 조회
-2. 그 중에 제일 최신 파일 하나만 선택
-3. 각 메시지 감정/키워드/내용 분석
-4. 결과 저장 및 analyzed=true 업데이트
+Supabase MCP 도구를 사용해서 다음 전체 워크플로우를 수행해줘:
+
+**1. 새 메시지 저장**
+   - `messages_table`에 새로운 메시지 저장:
+     - `text_msg`: "분석할 메시지 내용"
+     - `created_at`: 자동 생성
+     - `modified_msg`: 문맥에 맞게 문장 수정
+   - 저장된 메시지의 `id` 확인
+
+**2. 미분석 메시지 조회**
+   - `messages_table`에서 아직 분석되지 않은 메시지들을 찾아줘
+   - 조건: `messages_analysis_table`에 해당 `message_id`가 없는 `messages_table` 레코드들
+
+**3. 최신 메시지 선택** 
+   - 위에서 찾은 미분석 메시지들 중 `created_at`이 가장 최근인 row 1개 추출
+
+**4. 텍스트 분석 수행**
+   - 해당 row의 `text_msg` 내용을 분석해서:
+     - 감정 상태 (긍정/부정/중립 등)
+     - 주요 키워드 추출
+     - 내용 요약 및 카테고리 분류
+   - 분석 결과를 바탕으로 적절한 추천 답변 생성
+
+**5. 분석 결과 저장**
+   - `messages_analysis_table`에 새 레코드 생성:
+     - `message_id`: 분석한 메시지의 id
+     - `analysis_result`: LLM 분석 결과 (JSON 형태로 구조화)
+     - `recommended_response`: 생성된 추천 답변
+     - `slack_sent_at`: null (아직 전송 전)
+
+**6. Slack 전송**
+   - `recommended_response` 내용을 Slack에 "kakaotalk_assistant"채널에 전송
+   - 전송 성공 시 해당 레코드의 `slack_sent_at`을 현재 시간으로 업데이트
+
+**7. 결과 확인**
+   - 전체 프로세스 완료 상태 확인
+   - 저장된 데이터와 Slack 전송 결과 요약
