@@ -139,7 +139,3 @@ class ScreenMonitor:
         self.create_overlay()
         self.root.mainloop()
         print("모니터링이 종료되었습니다.")
-
-if __name__ == "__main__":
-    monitor = ScreenMonitor()
-    monitor.start()
