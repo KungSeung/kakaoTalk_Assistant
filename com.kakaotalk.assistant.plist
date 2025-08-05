@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 서비스 식별자 -->
+    <key>Label</key>
+    <string>com.kakaotalk.assistant</string>
+    
+    <!-- 실행할 프로그램 -->
+    <key>Program</key>
+    <string>/usr/bin/osascript</string>
+    
+    <!-- 프로그램 인수 -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/osascript</string>
+        <string>/Users/seung/Desktop/kakaoTalk_Assistant/AutoLauncher.scpt</string>
+    </array>
+    
+    <!-- 작업 디렉토리 -->
+    <key>WorkingDirectory</key>
+    <string>/Users/seung/Desktop/kakaoTalk_Assistant</string>
+    
+    <!-- 시스템 시작 시 자동 실행 -->
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <!-- 프로세스가 종료되면 자동으로 재시작 -->
+    <key>KeepAlive</key>
+    <true/>
+    
+    <!-- 시스템 절전모드 해제 시 실행 -->
+    <key>StartOnMount</key>
+    <true/>
+    
+    <!-- 표준 출력 로그 -->
+    <key>StandardOutPath</key>
+    <string>/Users/seung/Desktop/kakaoTalk_Assistant/launcher_stdout.log</string>
+    
+    <!-- 표준 에러 로그 -->
+    <key>StandardErrorPath</key>
+    <string>/Users/seung/Desktop/kakaoTalk_Assistant/launcher_stderr.log</string>
+    
+    <!-- 환경 변수 -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>/Users/seung</string>
+    </dict>
+    
+    <!-- 리소스 제한 -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>1024</integer>
+    </dict>
+    
+    <!-- 보안 설정 -->
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    
+    <!-- 재시작 간격 (초) -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+</dict>
+</plist>
