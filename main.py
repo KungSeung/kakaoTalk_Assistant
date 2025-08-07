@@ -6,10 +6,6 @@ def main():
     monitor = ScreenMonitor()
     monitor.start()
     
-    print("2. OCR 처리 시작...")
-    ocr = imgToText()
-    ocr.start()
-    
     print("완료!")
 
 if __name__ == "__main__":
