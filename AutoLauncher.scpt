@@ -54,7 +54,4 @@ on idle
 			run
 		end if
 	end try
-	
-	-- 60초마다 확인
-	return 60
 end idle
