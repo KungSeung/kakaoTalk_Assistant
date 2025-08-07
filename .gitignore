@@ -6,3 +6,6 @@ node_modules/
 package-lock.json
 __pycache__/
 text_msg/
+launcher_stderr.log
+launcher_stdout.log
+launcher.log
