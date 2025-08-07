@@ -115,8 +115,10 @@ class ScreenMonitor:
             self.stop_auto_screenshot()
         elif key == 'q' or char == 'ㅂ':
             self.root.quit()
+            self.hide_window()
         elif key == 'Escape':
             self.root.quit()
+            self.hide_window()
 
     def auto_screenshot(self):
         """30초마다 자동 스크린샷 시작"""
