@@ -4,6 +4,8 @@ from PIL import Image
 import os
 from datetime import datetime
 import time
+import threading
+from imgToText import imgToText
 
 class ScreenMonitor:
     def __init__(self):
@@ -11,6 +13,9 @@ class ScreenMonitor:
         self.save_dir = "captured_images"
         self.root = None
         self.drag_data = {"x": 0, "y": 0}
+        self.running = False
+        self.timer = None
+        self.ocr = imgToText()
         
         # 저장 디렉토리 생성
         if not os.path.exists(self.save_dir):
@@ -60,7 +65,7 @@ class ScreenMonitor:
         # 안내 텍스트
         label = tk.Label(
             inner_frame,
-            text="모니터링 영역\n\n's' 키 : 스크린샷 저장\n'q' 키 : 종료",
+            text="모니터링 영역\n\n's' 키 : 스크린샷 저장\n'a' 키 : 자동 스크린샷(30초 반복)\n'p' 키 : 자동 스크린샷 중단\n'q' 키 : 종료",
             bg='white',
             fg='blue',
             font=('Arial', 14, 'bold'),
@@ -104,11 +109,44 @@ class ScreenMonitor:
         # 영문 's' 또는 한글 'ㄴ' (한글 자음)
         if key == 's' or char == 'ㄴ':
             self.save_screenshot()
+        elif key == 'a' or char == 'ㅁ':
+            self.auto_screenshot()
+        elif key == 'p' or char == 'ㅔ':
+            self.stop_auto_screenshot()
         elif key == 'q' or char == 'ㅂ':
             self.root.quit()
         elif key == 'Escape':
             self.root.quit()
+
+    def auto_screenshot(self):
+        """30초마다 자동 스크린샷 시작"""
+        if not self.running:
+            self.running = True
+            print("자동 스크린샷 모드 on (30초 간격)")
+            self._auto_capture()
+        else:
+            print("이미 자동 스크린샷 모드가 실행중입니다.")
     
+    def _auto_capture(self):
+        """실제 자동 촬영 수행 <- 재귀"""
+        if self.running:
+            self.save_screenshot()
+            # 30초 후 다시 실행(반복)
+            self.timer = threading.Timer(30.0, self._auto_capture)
+            self.timer.start()
+        else:
+            print("자동 스크린샷 모드가 중단되었습니다.")
+
+    def stop_auto_screenshot(self):
+        """자동 스크린샷 중단"""
+        if self.running:
+            self.running = False
+            if self.timer:
+                self.timer.cancel()
+            print("자동 스크린샷 모드를 중단했습니다.")
+        else:
+            print("자동 스크린샷 모드가 실행 중이 아닙니다.")
+
     def save_screenshot(self):
         """현재 모니터링 영역의 스크린샷을 저장"""
         try:
@@ -131,6 +169,10 @@ class ScreenMonitor:
                 print(f"✅ 이미지가 저장되었습니다: {filepath}")
                 print(f"   위치: x={current_area['left']}, y={current_area['top']}")
                 
+                # OCR 분석
+                time.sleep(0.1)
+                print("2. OCR 처리 시작...")
+                self.ocr.start()
         except Exception as e:
             print(f"❌ 이미지 저장 중 오류 발생: {e}")
     
